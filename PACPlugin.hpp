@@ -7,7 +7,7 @@
 
 class QLabel;
 
-class SimplePlugin
+class PACPlugin
     : public QObject
     , Qv2ray::Qv2rayInterface
 {
