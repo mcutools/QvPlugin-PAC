@@ -2,8 +2,15 @@
 
 #include "interface/QvPluginInterface.hpp"
 
+#include <QDir>
+#include <QFile>
+#include <QFileInfo>
 #include <QObject>
+#include <QTextCodec>
 #include <QtPlugin>
+#include <memory>
+
+class PACServer;
 
 class QLabel;
 
@@ -32,7 +39,7 @@ class PACPlugin
     Qv2ray::Qv2rayKernelPluginObject *GetKernelInstance() override;
     //
     bool UpdatePluginSettings(const QJsonObject &) override;
-    bool InitializePlugin(const QJsonObject &) override;
+    bool InitializePlugin(const QString &, const QJsonObject &) override;
     const QIcon Icon() const override;
     const QJsonObject GetPluginSettngs() override;
     //
@@ -40,8 +47,49 @@ class PACPlugin
     void ProcessHook(Qv2ray::QV2RAY_PLUGIN_HOOK_TYPE, Qv2ray::QV2RAY_PLUGIN_HOOK_SUBTYPE, QVariant *) override;
   signals:
     void PluginLog(const QString &) const override;
+    void PluginErrorMessageBox(const QString &) const override;
+
+  public:
+    const QString GetConfigPath() const
+    {
+        return configPath;
+    }
 
   private:
+    QString configPath;
     QJsonObject settings;
-    QLabel *pluginWidget;
+    PACServer *server;
 };
+
+extern PACPlugin *pluginInstance;
+
+inline bool StringToFile(const QString &text, QString &path)
+{
+    QFile targetFile(path);
+    QFileInfo info(targetFile);
+    if (!info.dir().exists())
+    {
+        info.dir().mkpath(info.dir().path());
+    }
+    bool override = targetFile.exists();
+    targetFile.open(QFile::WriteOnly);
+    targetFile.write(text.toUtf8());
+    targetFile.close();
+    return override;
+}
+
+inline QString StringFromFile(QString &sourcePath)
+{
+    QFile source(sourcePath);
+    bool wasOpened = source.isOpen();
+    if (!wasOpened)
+        source.open(QFile::ReadOnly);
+    auto byteArray = source.readAll();
+    if (!wasOpened)
+        source.close();
+    //
+    QTextCodec::ConverterState state;
+    QTextCodec *codec = QTextCodec::codecForName("UTF-8");
+    const QString text = codec->toUnicode(byteArray.constData(), byteArray.size(), &state);
+    return (state.invalidChars > 0) ? byteArray : text;
+}
