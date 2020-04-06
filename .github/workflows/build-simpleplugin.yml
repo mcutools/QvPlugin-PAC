@@ -70,7 +70,6 @@ jobs:
           cached: ${{ steps.cache-qt.outputs.cache-hit }}
 # ========================================================================================================= Generate MakeFile and Build
       - name: Windows - ${{ matrix.qt_version }} - Generate Dependencies and Build
-        shell: bash
         if: matrix.platform == 'windows-latest'
         run: |
           mkdir build
