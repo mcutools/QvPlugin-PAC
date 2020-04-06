@@ -10,7 +10,7 @@
 #include <memory>
 
 QString ConvertGFWToPAC(const QByteArray &rawContent, const QString &customProxyString);
-class PACServer : public QThread
+class PACServer : public QObject
 {
     Q_OBJECT
   public:
@@ -21,12 +21,10 @@ class PACServer : public QThread
         proxyString = proxyStr;
     }
     void stopServer();
+    void startServer();
 
   private:
-    void run() override;
     QString proxyString;
-
-  private:
     QHttpServer *server;
-    static void pacRequestHandler(QHttpRequest *request, QHttpResponse *response);
+    static void PACRequestHandler(QHttpRequest *request, QHttpResponse *response);
 };

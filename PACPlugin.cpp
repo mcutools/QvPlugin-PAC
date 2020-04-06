@@ -57,6 +57,7 @@ bool PACPlugin::InitializePlugin(const QString &confPath, const QJsonObject &set
 {
     emit PluginLog("Initialize PAC plugin.");
     pluginInstance = this;
+    this->server = new PACServer(this);
     this->configPath = confPath;
     this->settings = settings;
     return true;
@@ -180,15 +181,11 @@ void PACPlugin::ProcessHook(Qv2ray::QV2RAY_PLUGIN_HOOK_TYPE event, Qv2ray::QV2RA
     {
         if (subtype == Qv2ray::HOOK_STYPE_POST_CONNECTED)
         {
-            server = new PACServer(this);
-            server->start();
+            server->startServer();
         }
         if (subtype == Qv2ray::HOOK_STYPE_POST_DISCONNECTED)
         {
-            if (server && server->isRunning())
-            {
-                server->stopServer();
-            }
+            server->stopServer();
         }
     }
 }

@@ -2,62 +2,67 @@
 
 static QString pacContent = "";
 
-PACServer::PACServer(QObject *parent) : QThread(parent)
+PACServer::PACServer(QObject *parent) : QObject(parent)
 {
-    server = new QHttpServer(this);
-    connect(this, &QThread::finished, this, &QThread::deleteLater);
 }
 PACServer::~PACServer()
 {
-    wait();
-    delete server;
 }
 void PACServer::stopServer()
 {
     server->close();
+    delete server;
 }
-void PACServer::run()
+void PACServer::startServer()
 {
-    auto settings = pluginInstance->GetPluginSettngs();
-    auto address = settings["listenip"].toString();
-    auto port = settings["port"].toInt();
+    server = new QHttpServer(this);
+    connect(server, &QHttpServer::newRequest, this, &PACServer::PACRequestHandler);
+    //
+    const auto &settings = pluginInstance->GetPluginSettngs();
     //
     auto fPath = pluginInstance->GetConfigPath() + "/gfwList.txt";
-    QFile pacFile(fPath);
-    pacFile.open(QFile::ReadOnly);
-    auto content = pacFile.readAll();
-    pacContent = ConvertGFWToPAC(content, proxyString);
     //
-    connect(server, &QHttpServer::newRequest, this, &PACServer::pacRequestHandler);
-    auto result = server->listen(QHostAddress(address), static_cast<ushort>(port));
+    QFile pacFile(fPath);
+    if (!pacFile.exists())
+    {
+        pluginInstance->PluginErrorMessageBox(tr("Cannot find GFWList file: ") + fPath);
+        return;
+    }
+    //
+    pacFile.open(QFile::ReadOnly);
+    pacContent = ConvertGFWToPAC(pacFile.readAll(), proxyString);
+    pacFile.close();
+    //
+    auto result = server->listen(QHostAddress(settings["listenip"].toString()), settings["port"].toInt());
     if (!result)
     {
         pluginInstance->PluginErrorMessageBox(tr("Failed to listen PAC request on this port, please verify the permissions"));
+        return;
     }
 }
 
-void PACServer::pacRequestHandler(QHttpRequest *req, QHttpResponse *rsp)
+void PACServer::PACRequestHandler(QHttpRequest *req, QHttpResponse *rsp)
 {
-    rsp->setHeader("Server", "Qv2ray/Plugin/PAC_Handler");
+    rsp->setHeader("Server", "Qv2ray/QvPACPlugin");
     if (req->method() == QHttpRequest::HTTP_GET)
     {
         if (req->path() == "/pac")
         {
             rsp->writeHead(200);
             rsp->setHeader("Content-Type", "application/javascript; charset=utf-8");
-            rsp->write(pacContent.toUtf8());
+            rsp->end(pacContent.toUtf8());
         }
         else
         {
             rsp->writeHead(404);
             rsp->setHeader("Content-Type", "text/plain; charset=utf-8");
-            rsp->write("NOT FOUND");
+            rsp->end("NOT FOUND");
         }
     }
     else
     {
         rsp->writeHead(405);
         rsp->setHeader("Content-Type", "text/plain; charset=utf-8");
-        rsp->write("PAC ONLY SUPPORT GET");
+        rsp->end("PAC ONLY SUPPORT GET");
     }
 }

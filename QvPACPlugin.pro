@@ -1,6 +1,6 @@
 TEMPLATE = lib
 QT += network widgets gui
-CONFIG += qt plugin
+CONFIG += qt plugin c++11
 
 HEADERS += \
     $${PWD}/3rdparty/qhttpserver/http-parser/http_parser.h\
