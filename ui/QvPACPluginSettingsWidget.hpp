@@ -28,6 +28,8 @@ class QvPACPluginSettingsWidget
 
     void on_pacListenAddrTxt_textEdited(const QString &arg1);
 
+    void on_openPACButton_clicked();
+
   private:
     QJsonObject settings;
 };

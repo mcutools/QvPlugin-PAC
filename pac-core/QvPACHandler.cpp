@@ -4,7 +4,7 @@ static QString pacContent = "";
 
 PACServer::PACServer(QObject *parent) : QThread(parent)
 {
-    server = new httplib::Server();
+    server = new QHttpServer(this);
     connect(this, &QThread::finished, this, &QThread::deleteLater);
 }
 PACServer::~PACServer()
@@ -14,8 +14,7 @@ PACServer::~PACServer()
 }
 void PACServer::stopServer()
 {
-    if (server && server->is_running())
-        server->stop();
+    server->close();
 }
 void PACServer::run()
 {
@@ -29,33 +28,36 @@ void PACServer::run()
     auto content = pacFile.readAll();
     pacContent = ConvertGFWToPAC(content, proxyString);
     //
-    server->Get("/pac", pacRequestHandler);
-    auto result = server->listen(address.toStdString().c_str(), static_cast<ushort>(port));
+    connect(server, &QHttpServer::newRequest, this, &PACServer::pacRequestHandler);
+    auto result = server->listen(QHostAddress(address), static_cast<ushort>(port));
     if (!result)
     {
         pluginInstance->PluginErrorMessageBox(tr("Failed to listen PAC request on this port, please verify the permissions"));
     }
 }
 
-void PACServer::pacRequestHandler(const httplib::Request &req, httplib::Response &rsp)
+void PACServer::pacRequestHandler(QHttpRequest *req, QHttpResponse *rsp)
 {
-    rsp.set_header("Server", "Qv2ray/Plugin/PAC_Handler");
-    if (req.method == "GET")
+    rsp->setHeader("Server", "Qv2ray/Plugin/PAC_Handler");
+    if (req->method() == QHttpRequest::HTTP_GET)
     {
-        if (req.path == "/pac")
+        if (req->path() == "/pac")
         {
-            rsp.status = 200;
-            rsp.set_content(pacContent.toStdString(), "application/javascript; charset=utf-8");
+            rsp->writeHead(200);
+            rsp->setHeader("Content-Type", "application/javascript; charset=utf-8");
+            rsp->write(pacContent.toUtf8());
         }
         else
         {
-            rsp.status = 404;
-            rsp.set_content("NOT FOUND", "text/plain; charset=utf-8");
+            rsp->writeHead(404);
+            rsp->setHeader("Content-Type", "text/plain; charset=utf-8");
+            rsp->write("NOT FOUND");
         }
     }
     else
     {
-        rsp.status = 405;
-        rsp.set_content("PAC ONLY SUPPORT GET", "text/plain; charset=utf-8");
+        rsp->writeHead(405);
+        rsp->setHeader("Content-Type", "text/plain; charset=utf-8");
+        rsp->write("PAC ONLY SUPPORT GET");
     }
 }

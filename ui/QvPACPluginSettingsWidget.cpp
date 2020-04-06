@@ -142,3 +142,7 @@ void QvPACPluginSettingsWidget::on_pacListenAddrTxt_textEdited(const QString &ar
 {
     settings["listenip"] = arg1;
 }
+
+void QvPACPluginSettingsWidget::on_openPACButton_clicked()
+{
+}

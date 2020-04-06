@@ -1,6 +1,9 @@
 [submodule "interface"]
 	path = interface
 	url = https://github.com/Qv2ray/QvPlugin-Interface/
-[submodule "3rdparty/cpp-httplib"]
-	path = 3rdparty/cpp-httplib
-	url = https://github.com/yhirose/cpp-httplib
+[submodule "3rdparty/qhttpserver"]
+	path = 3rdparty/qhttpserver
+	url = https://github.com/nikhilm/qhttpserver
+[submodule "3rdparty/qhttp"]
+	path = 3rdparty/qhttp
+	url = https://github.com/azadkuh/qhttp
