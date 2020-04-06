@@ -11,6 +11,8 @@ HEADERS += \
     $${PWD}/interface/QvPluginInterface.hpp \
     $${PWD}/pac-core/QvPACHandler.hpp
 
+DEFINES += QHTTPSERVER_EXPORT
+    
 INCLUDEPATH += \
     $${PWD}/3rdparty/qhttpserver/ \
     $${PWD}/3rdparty/qhttpserver/http-parser

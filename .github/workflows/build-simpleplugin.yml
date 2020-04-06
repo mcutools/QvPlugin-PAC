@@ -116,15 +116,15 @@ jobs:
         if: matrix.platform == 'macos-latest'
         uses: actions/upload-artifact@master
         with:
-          name: ${{ steps.get_name.outputs.NAME }}-${{ github.sha }}.macOS-${{ matrix.arch }}.qt${{ matrix.qt_version }}.so
-          path: build/lib${{ steps.get_name.outputs.NAME }}.so
+          name: ${{ steps.get_name.outputs.NAME }}-${{ github.sha }}.macOS-${{ matrix.arch }}.qt${{ matrix.qt_version }}.dylib
+          path: build/lib${{ steps.get_name.outputs.NAME }}.dylib
       - name: macOS - ${{ matrix.qt_version }} - Upload binaries to release
         uses: svenstaro/upload-release-action@v1-release
         if: github.event_name == 'release' && matrix.platform == 'macos-latest'
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: build/lib${{ steps.get_name.outputs.NAME }}.so
-          asset_name: ${{ steps.get_name.outputs.NAME }}.${{ steps.get_version.outputs.VERSION }}.macOS-${{ matrix.arch }}.so
+          file: build/lib${{ steps.get_name.outputs.NAME }}.dylib
+          asset_name: ${{ steps.get_name.outputs.NAME }}.${{ steps.get_version.outputs.VERSION }}.macOS-${{ matrix.arch }}.dylib
           tag: ${{ github.ref }}
           overwrite: true
 # --------------------------------------------------------
