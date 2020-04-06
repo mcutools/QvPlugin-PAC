@@ -30,6 +30,8 @@ class QvPACPluginSettingsWidget
 
     void on_openPACButton_clicked();
 
+    void on_buttonBox_rejected();
+
   private:
     QJsonObject settings;
 };

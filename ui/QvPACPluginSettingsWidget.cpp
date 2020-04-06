@@ -136,6 +136,7 @@ void QvPACPluginSettingsWidget::on_pacPortSB_valueChanged(int arg1)
 void QvPACPluginSettingsWidget::on_buttonBox_accepted()
 {
     pluginInstance->UpdatePluginSettings(settings);
+    parentWidget()->close();
 }
 
 void QvPACPluginSettingsWidget::on_pacListenAddrTxt_textEdited(const QString &arg1)
@@ -145,4 +146,9 @@ void QvPACPluginSettingsWidget::on_pacListenAddrTxt_textEdited(const QString &ar
 
 void QvPACPluginSettingsWidget::on_openPACButton_clicked()
 {
+}
+
+void QvPACPluginSettingsWidget::on_buttonBox_rejected()
+{
+    parentWidget()->close();
 }
