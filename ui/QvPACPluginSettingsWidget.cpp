@@ -1,7 +1,7 @@
 #include "QvPACPluginSettingsWidget.hpp"
 
+#include "HTTPRequestHelper.hpp"
 #include "PACPlugin.hpp"
-#include "common/HTTPRequestHelper.hpp"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -9,7 +9,7 @@
 QvPACPluginSettingsWidget::QvPACPluginSettingsWidget(QWidget *parent) : QWidget(parent)
 {
     setupUi(this);
-    this->settings = pluginInstance->GetPluginSettngs();
+    this->settings = pluginInstance->GetSettngs();
     bool pacEnabled = settings["enablePAC"].toBool(true);
     pacGroupBox->setChecked(pacEnabled);
     //
@@ -135,7 +135,7 @@ void QvPACPluginSettingsWidget::on_pacPortSB_valueChanged(int arg1)
 
 void QvPACPluginSettingsWidget::on_buttonBox_accepted()
 {
-    pluginInstance->UpdatePluginSettings(settings);
+    pluginInstance->UpdateSettings(settings);
     parentWidget()->close();
 }
 

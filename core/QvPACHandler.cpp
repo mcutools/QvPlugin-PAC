@@ -1,5 +1,7 @@
 #include "QvPACHandler.hpp"
 
+#include "PACPlugin.hpp"
+
 static QString pacContent = "";
 
 PACServer::PACServer(QObject *parent) : QObject(parent)
@@ -18,7 +20,7 @@ void PACServer::startServer()
     server = new QHttpServer(this);
     connect(server, &QHttpServer::newRequest, this, &PACServer::PACRequestHandler);
     //
-    const auto &settings = pluginInstance->GetPluginSettngs();
+    const auto &settings = pluginInstance->GetSettngs();
     //
     auto fPath = pluginInstance->GetConfigPath() + "/gfwList.txt";
     //

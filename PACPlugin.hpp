@@ -1,50 +1,53 @@
 #pragma once
 
-#include "interface/QvPluginInterface.hpp"
+#include "PACPluginProcessor.hpp"
+#include "QvPluginInterface.hpp"
 
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
+#include <QMetaEnum>
 #include <QObject>
 #include <QTextCodec>
 #include <QtPlugin>
-#include <memory>
 
 class PACServer;
-
 class QLabel;
+using namespace Qv2rayPlugin;
 
-class PACPlugin
+class Qv2rayPACPlugin
     : public QObject
-    , Qv2ray::Qv2rayInterface
+    , Qv2rayInterface
 {
-    Q_INTERFACES(Qv2ray::Qv2rayInterface)
+    Q_INTERFACES(Qv2rayPlugin::Qv2rayInterface)
     Q_PLUGIN_METADATA(IID Qv2rayInterface_IID)
     Q_OBJECT
   public:
-    Qv2ray::QV2RAY_PLUGIN_HOOK_TYPE_FLAGS PluginHooks() const override;
-    Qv2ray::QV2RAY_SPECIAL_PLUGIN_TYPE_FLAGS SpecialPluginType() const override;
     //
     // Basic metainfo of this plugin
-    QString Name() const override;
-    QString InternalName() const override;
-    QString Author() const override;
-    QString Description() const override;
+    const QvPluginMetadata GetMetadata() const override
+    {
+        return QvPluginMetadata{
+            "Qv2ray PAC Plugin",                                        //
+            "pac_plugin",                                               //
+            "Qv2ray Workgroup",                                         //
+            tr("This plugin allows you to use PAC as a proxy method."), //
+            QIcon(":/qv2ray.png"),                                      //
+            { CAPABILITY_SYSTEM_PROXY, CAPABILITY_CONNECTIVITY },       //
+            { SPECIAL_TYPE_NONE }                                       //
+        };
+    }
     //
-    QStringList OutboundTypes() const override;
-    //
-    QWidget *GetSettingsWidget() override;
-    Qv2ray::Qv2rayPluginEditorWidget *GetEditorWidget(Qv2ray::QV2RAY_PLUGIN_UI_TYPE) override;
     QObject *GetQObject() override;
-    Qv2ray::Qv2rayKernelPluginObject *GetKernelInstance() override;
+    QWidget *GetSettingsWidget() override;
+    QvPluginKernel *GetKernel() override;
+    QvPluginEditor *GetEditorWidget(Qv2rayPlugin::UI_TYPE) override;
     //
-    bool UpdatePluginSettings(const QJsonObject &) override;
-    bool InitializePlugin(const QString &, const QJsonObject &) override;
-    const QIcon Icon() const override;
-    const QJsonObject GetPluginSettngs() override;
-    //
-    /// The hook function, for SPECIAL_TYPE_NONE
-    void ProcessHook(Qv2ray::QV2RAY_PLUGIN_HOOK_TYPE, Qv2ray::QV2RAY_PLUGIN_HOOK_SUBTYPE, QVariant *) override;
+    bool UpdateSettings(const QJsonObject &) override;
+    bool Initialize(const QString &, const QJsonObject &) override;
+    const QJsonObject GetSettngs() override;
+    QvPluginEventHandler *GetEventHandler() override;
+
   signals:
     void PluginLog(const QString &) const override;
     void PluginErrorMessageBox(const QString &) const override;
@@ -56,12 +59,12 @@ class PACPlugin
     }
 
   private:
+    PACPluginProcessor *processor;
     QString configPath;
     QJsonObject settings;
-    PACServer *server;
 };
 
-extern PACPlugin *pluginInstance;
+extern Qv2rayPACPlugin *pluginInstance;
 
 inline bool StringToFile(const QString &text, QString &path)
 {
@@ -92,4 +95,11 @@ inline QString StringFromFile(QString &sourcePath)
     QTextCodec *codec = QTextCodec::codecForName("UTF-8");
     const QString text = codec->toUnicode(byteArray.constData(), byteArray.size(), &state);
     return (state.invalidChars > 0) ? byteArray : text;
+}
+
+// Helper template function to convert an enum to QString.
+template<typename T>
+QString EnumToString(const T &t)
+{
+    return QMetaEnum::fromType<T>().key(t);
 }
