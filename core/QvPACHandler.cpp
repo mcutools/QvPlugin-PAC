@@ -12,11 +12,20 @@ PACServer::~PACServer()
 }
 void PACServer::stopServer()
 {
-    server->close();
+    if (server)
+    {
+        server->close();
+    }
     delete server;
+    server = nullptr;
 }
-void PACServer::startServer()
+bool PACServer::startServer()
 {
+    if (isStarted)
+    {
+        // This line should rarely be touched.
+        stopServer();
+    }
     server = new QHttpServer(this);
     connect(server, &QHttpServer::newRequest, this, &PACServer::PACRequestHandler);
     //
@@ -28,19 +37,19 @@ void PACServer::startServer()
     if (!pacFile.exists())
     {
         pluginInstance->PluginErrorMessageBox(tr("Cannot find GFWList file: ") + fPath);
-        return;
+        return false;
     }
     //
     pacFile.open(QFile::ReadOnly);
     pacContent = ConvertGFWToPAC(pacFile.readAll(), proxyString);
     pacFile.close();
     //
-    auto result = server->listen(QHostAddress(settings["listenip"].toString()), settings["port"].toInt());
-    if (!result)
+    isStarted = server->listen(QHostAddress(settings["listenip"].toString()), settings["port"].toInt());
+    if (!isStarted)
     {
         pluginInstance->PluginErrorMessageBox(tr("Failed to listen PAC request on this port, please verify the permissions"));
-        return;
     }
+    return isStarted;
 }
 
 void PACServer::PACRequestHandler(QHttpRequest *req, QHttpResponse *rsp)

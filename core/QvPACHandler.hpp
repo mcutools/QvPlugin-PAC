@@ -20,10 +20,15 @@ class PACServer : public QObject
         proxyString = proxyStr;
     }
     void stopServer();
-    void startServer();
+    bool isServerStarted() const
+    {
+        return isStarted;
+    }
+    [[nodiscard]] bool startServer();
 
   private:
     QString proxyString;
+    bool isStarted = false;
     QHttpServer *server;
     static void PACRequestHandler(QHttpRequest *request, QHttpResponse *response);
 };

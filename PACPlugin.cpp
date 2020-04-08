@@ -8,7 +8,7 @@
 
 Qv2rayPACPlugin *pluginInstance = nullptr;
 
-Qv2rayPlugin::QvPluginKernel *Qv2rayPACPlugin::GetKernel()
+QvPluginKernel *Qv2rayPACPlugin::GetKernel()
 {
     return nullptr;
 }

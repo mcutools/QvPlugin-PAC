@@ -17,7 +17,7 @@ using namespace Qv2rayPlugin;
 
 class Qv2rayPACPlugin
     : public QObject
-    , Qv2rayInterface
+    , public Qv2rayInterface
 {
     Q_INTERFACES(Qv2rayPlugin::Qv2rayInterface)
     Q_PLUGIN_METADATA(IID Qv2rayInterface_IID)
@@ -29,8 +29,8 @@ class Qv2rayPACPlugin
     {
         return QvPluginMetadata{
             "Qv2ray PAC Plugin",                                        //
-            "pac_plugin",                                               //
             "Qv2ray Workgroup",                                         //
+            "pac_plugin",                                               //
             tr("This plugin allows you to use PAC as a proxy method."), //
             QIcon(":/qv2ray.png"),                                      //
             { CAPABILITY_SYSTEM_PROXY, CAPABILITY_CONNECTIVITY },       //

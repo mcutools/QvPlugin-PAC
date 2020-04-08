@@ -11,6 +11,6 @@ class PACPluginProcessor : public Qv2rayPlugin::QvPluginEventHandler
     QVPlUGIN_DECL_EVENT_HANDLER_OVERRIDE(Connectivity);
 
   private:
-    PACServer *server;
-    bool canStartPAC;
+    PACServer server;
+    bool isPACStarted;
 };
