@@ -19,7 +19,7 @@ QStringList macOSgetNetworkServices()
     p.waitForFinished();
     // LOG(MODULE_PROXY, p.errorString())
     auto str = p.readAllStandardOutput();
-    auto lines = SplitLines(str);
+    auto lines = str.split(QRegExp("[\r\n]"), QString::SkipEmptyParts);
     QStringList result;
 
     // Start from 1 since first line is unneeded.
