@@ -34,11 +34,6 @@ const QJsonObject Qv2rayPACPlugin::GetSettngs()
     return settings;
 }
 
-QObject *Qv2rayPACPlugin::GetQObject()
-{
-    return this;
-}
-
 QWidget *Qv2rayPACPlugin::GetSettingsWidget()
 {
     return new QvPACPluginSettingsWidget();

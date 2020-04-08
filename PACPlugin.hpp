@@ -38,7 +38,6 @@ class Qv2rayPACPlugin
         };
     }
     //
-    QObject *GetQObject() override;
     QWidget *GetSettingsWidget() override;
     QvPluginKernel *GetKernel() override;
     QvPluginEditor *GetEditorWidget(Qv2rayPlugin::UI_TYPE) override;

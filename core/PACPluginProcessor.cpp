@@ -15,11 +15,18 @@ void PACPluginProcessor::ProcessEvent_SystemProxy(const ::Qv2rayPlugin::QvSystem
             const auto &settings = pluginInstance->GetSettngs();
             if (isPACStarted)
             {
-                // If we use PAC and socks/http are properly configured for PAC
-                pluginInstance->PluginLog("Setting up system proxy for PAC.");
-                auto proxyAddress = "http://127.0.0.1:" + QString::number(settings["port"].toInt(8990)) + "/pac";
-                // Set System Proxy
-                SetSystemProxy(proxyAddress);
+                if (settings["setSystemProxy"].toBool(false))
+                {
+                    // If we use PAC and socks/http are properly configured for PAC
+                    pluginInstance->PluginLog("Setting up system proxy for PAC.");
+                    auto proxyAddress = "http://127.0.0.1:" + QString::number(settings["port"].toInt(8990)) + "/pac";
+                    // Set System Proxy
+                    SetSystemProxy(proxyAddress);
+                }
+                else
+                {
+                    pluginInstance->PluginLog("System proxy has been disabled via settings.");
+                }
             }
             else
             {
