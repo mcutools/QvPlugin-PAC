@@ -28,9 +28,11 @@ class QvPACPluginSettingsWidget
 
     void on_pacListenAddrTxt_textEdited(const QString &arg1);
 
-    void on_openPACButton_clicked();
-
     void on_buttonBox_rejected();
+
+    void on_openPACDirBtn_clicked();
+
+    void on_pacSystemProxyCB_stateChanged(int arg1);
 
   private:
     QJsonObject settings;

@@ -11,7 +11,8 @@ HEADERS += \
     $${PWD}/core/HTTPRequestHelper.hpp \
     $${PWD}/core/QvPACHandler.hpp \
     $${PWD}/ui/QvPACPluginSettingsWidget.hpp \
-    core/PACPluginProcessor.hpp
+    core/PACPluginProcessor.hpp \
+    core/PACSystemProxyConfigurator.hpp
 
 DEFINES += QHTTPSERVER_EXPORT
     
@@ -28,7 +29,8 @@ SOURCES += \
     $${PWD}/core/HTTPRequestHelper.cpp \
     $${PWD}/core/QvGFWPACConverter.cpp\
     $${PWD}/core/QvPACHandler.cpp \
-    core/PACPluginProcessor.cpp
+    core/PACPluginProcessor.cpp \
+    core/PACSystemProxyConfigurator.cpp
 
 FORMS += ui/QvPACPluginSettingsWidget.ui
 

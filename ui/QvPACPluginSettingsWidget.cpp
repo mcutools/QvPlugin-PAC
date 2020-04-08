@@ -3,6 +3,7 @@
 #include "HTTPRequestHelper.hpp"
 #include "PACPlugin.hpp"
 
+#include <QDesktopServices>
 #include <QFileDialog>
 #include <QMessageBox>
 
@@ -144,11 +145,17 @@ void QvPACPluginSettingsWidget::on_pacListenAddrTxt_textEdited(const QString &ar
     settings["listenip"] = arg1;
 }
 
-void QvPACPluginSettingsWidget::on_openPACButton_clicked()
-{
-}
-
 void QvPACPluginSettingsWidget::on_buttonBox_rejected()
 {
     parentWidget()->close();
+}
+
+void QvPACPluginSettingsWidget::on_openPACDirBtn_clicked()
+{
+    QDesktopServices::openUrl(QUrl::fromUserInput(pluginInstance->GetConfigPath()));
+}
+
+void QvPACPluginSettingsWidget::on_pacSystemProxyCB_stateChanged(int arg1)
+{
+    settings["setSystemProxy"] = arg1 == Qt::Checked;
 }

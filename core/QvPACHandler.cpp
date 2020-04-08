@@ -28,21 +28,35 @@ bool PACServer::startServer()
     }
     server = new QHttpServer(this);
     connect(server, &QHttpServer::newRequest, this, &PACServer::PACRequestHandler);
+    pluginInstance->PluginLog("Starting PAC Server.");
     //
     const auto &settings = pluginInstance->GetSettngs();
     //
-    auto fPath = pluginInstance->GetConfigPath() + "/gfwList.txt";
-    //
-    QFile pacFile(fPath);
-    if (!pacFile.exists())
+    auto GFWListsPath = pluginInstance->GetConfigPath() + "/gfwList.txt";
+    QFile gfwFile(GFWListsPath);
+    auto PACPath = pluginInstance->GetConfigPath() + "/qv2ray.pac";
+    QFile pacFile(PACPath);
+
+    if (pacFile.exists())
     {
-        pluginInstance->PluginErrorMessageBox(tr("Cannot find GFWList file: ") + fPath);
+        pluginInstance->PluginLog("Loaded PAC from user's qv2ray.pac");
+        pacContent = StringFromFile(PACPath);
+    }
+    else if (gfwFile.exists())
+    {
+        pluginInstance->PluginLog("Loading PAC from GFWLists");
+        gfwFile.open(QFile::ReadOnly);
+        pacContent = ConvertGFWToPAC(gfwFile.readAll(), proxyString);
+        gfwFile.close();
+        StringToFile(pacContent, PACPath);
+    }
+    else
+    {
+        pluginInstance->PluginLog("Cannot find qv2ray.pac or gfwList.txt");
+        pluginInstance->PluginErrorMessageBox(tr("Cannot find GFWLists file or user PAC file."));
         return false;
     }
     //
-    pacFile.open(QFile::ReadOnly);
-    pacContent = ConvertGFWToPAC(pacFile.readAll(), proxyString);
-    pacFile.close();
     //
     isStarted = server->listen(QHostAddress(settings["listenip"].toString()), settings["port"].toInt());
     if (!isStarted)
@@ -59,6 +73,7 @@ void PACServer::PACRequestHandler(QHttpRequest *req, QHttpResponse *rsp)
     {
         if (req->path() == "/pac")
         {
+            pluginInstance->PluginLog("Processing PAC request.");
             rsp->writeHead(200);
             rsp->setHeader("Content-Type", "application/javascript; charset=utf-8");
             rsp->end(pacContent.toUtf8());

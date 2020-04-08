@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>529</width>
-    <height>408</height>
+    <width>463</width>
+    <height>328</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,69 +20,78 @@
       <enum>Qt::PreventContextMenu</enum>
      </property>
      <property name="title">
-      <string>PAC Settings</string>
+      <string>Enable PAC</string>
      </property>
      <property name="checkable">
       <bool>true</bool>
      </property>
      <property name="checked">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
-     <layout class="QFormLayout" name="formLayout_11">
-      <item row="0" column="0" colspan="2">
-       <widget class="QLabel" name="label_74">
-        <property name="font">
-         <font>
-          <italic>true</italic>
-         </font>
-        </property>
+     <layout class="QFormLayout" name="formLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label">
         <property name="text">
-         <string>The system proxy will be configured to use the PAC instead of HTTP and SOCKS.</string>
+         <string>Listening Address</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="label_57">
-        <property name="text">
-         <string>Port</string>
-        </property>
-       </widget>
+      <item row="0" column="1">
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QLineEdit" name="pacListenAddrTxt">
+          <property name="text">
+           <string>127.0.0.1</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_57">
+          <property name="text">
+           <string>:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSpinBox" name="pacPortSB">
+          <property name="minimum">
+           <number>1</number>
+          </property>
+          <property name="maximum">
+           <number>65535</number>
+          </property>
+          <property name="value">
+           <number>8088</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
-      <item row="2" column="1">
-       <widget class="QSpinBox" name="pacPortSB">
-        <property name="minimum">
-         <number>1</number>
-        </property>
-        <property name="maximum">
-         <number>65535</number>
-        </property>
-        <property name="value">
-         <number>8088</number>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="0">
+      <item row="1" column="0">
        <widget class="QLabel" name="label_56">
         <property name="text">
          <string>Local IP for PAC</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="1">
+      <item row="1" column="1">
        <widget class="QLineEdit" name="pacProxyTxt">
+        <property name="toolTip">
+         <string>Used when providing PAC service for other devices.</string>
+        </property>
         <property name="placeholderText">
          <string>127.0.0.1</string>
         </property>
        </widget>
       </item>
-      <item row="4" column="0">
+      <item row="2" column="0">
        <widget class="QLabel" name="label_63">
         <property name="text">
-         <string>Use Proxy</string>
+         <string>Proxy Via</string>
         </property>
        </widget>
       </item>
-      <item row="4" column="1">
+      <item row="2" column="1">
        <widget class="QComboBox" name="pacProxyCB">
         <item>
          <property name="text">
@@ -96,15 +105,29 @@
         </item>
        </widget>
       </item>
-      <item row="5" column="0">
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>System Proxy</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QCheckBox" name="pacSystemProxyCB">
+        <property name="text">
+         <string>Set System Proxy</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
        <widget class="QLabel" name="label_58">
         <property name="text">
          <string>Import GFWList</string>
         </property>
        </widget>
       </item>
-      <item row="5" column="1">
-       <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <item row="4" column="1">
+       <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="1,0,0">
         <item>
          <widget class="QComboBox" name="gfwListCB">
           <item>
@@ -147,7 +170,7 @@
         <item>
          <widget class="QCheckBox" name="getGFWListWithProxyCB">
           <property name="text">
-           <string>Download with System Proxy</string>
+           <string>Use System Proxy</string>
           </property>
          </widget>
         </item>
@@ -160,28 +183,14 @@
         </item>
        </layout>
       </item>
-      <item row="6" column="0">
-       <widget class="QLabel" name="label_62">
-        <property name="text">
-         <string>Edit PAC</string>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="1">
-       <widget class="QPushButton" name="openPACButton">
-        <property name="text">
-         <string>Open PAC Folder</string>
-        </property>
-       </widget>
-      </item>
-      <item row="7" column="0">
+      <item row="5" column="0">
        <widget class="QLabel" name="label_66">
         <property name="text">
          <string>PAC Access Path</string>
         </property>
        </widget>
       </item>
-      <item row="7" column="1">
+      <item row="5" column="1">
        <widget class="QLabel" name="pacListenAddrLabel">
         <property name="cursor">
          <cursorShape>IBeamCursor</cursorShape>
@@ -194,17 +203,10 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label">
+      <item row="6" column="0" colspan="2">
+       <widget class="QPushButton" name="openPACDirBtn">
         <property name="text">
-         <string>Listening Address</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QLineEdit" name="pacListenAddrTxt">
-        <property name="text">
-         <string>127.0.0.1</string>
+         <string>Open PAC Folder</string>
         </property>
        </widget>
       </item>

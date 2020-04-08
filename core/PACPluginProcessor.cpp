@@ -1,6 +1,7 @@
 #include "PACPluginProcessor.hpp"
 
 #include "PACPlugin.hpp"
+#include "PACSystemProxyConfigurator.hpp"
 
 PACPluginProcessor::PACPluginProcessor(QObject *parent) : Qv2rayPlugin::QvPluginEventHandler(parent), server(this)
 {
@@ -15,14 +16,15 @@ void PACPluginProcessor::ProcessEvent_SystemProxy(const ::Qv2rayPlugin::QvSystem
             if (isPACStarted)
             {
                 // If we use PAC and socks/http are properly configured for PAC
-                pluginInstance->PluginLog("System proxy uses PAC");
+                pluginInstance->PluginLog("Setting up system proxy for PAC.");
                 auto proxyAddress = "http://127.0.0.1:" + QString::number(settings["port"].toInt(8990)) + "/pac";
                 // Set System Proxy
-                // TODO
+                SetSystemProxy(proxyAddress);
             }
             else
             {
                 // Not properly configured
+                pluginInstance->PluginLog("PAC Server is not started, we should not set proxy");
                 pluginInstance->PluginErrorMessageBox(tr("PAC Server is not started, not setting proxy."));
                 return;
             }
@@ -42,12 +44,14 @@ void PACPluginProcessor::ProcessEvent_Connectivity(const ::Qv2rayPlugin::QvConne
         case Qv2rayPlugin::QvConnecticity_Connected:
         {
             const auto &settings = pluginInstance->GetSettngs();
-
+            if (!settings["setSystemProxy"].toBool(false))
+            {
+                break;
+            }
             bool pacUseSocks = settings["useSocksProxy"].toBool();
             bool httpEnabled = event.inboundPorts.contains("http");
             bool socksEnabled = event.inboundPorts.contains("socks");
-            QString pacProxyString; // Something like this --> SOCKS5 127.0.0.1:1080; SOCKS
-                                    // 127.0.0.1:1080; DIRECT; http://proxy:8080
+            QString pacProxyString; // Something like: SOCKS5 127.0.0.1:1080; SOCKS 127.0.0.1:1080; DIRECT; http://proxy:8080
             auto pacProxyServerIP = settings["localIP"].toString("127.0.0.1");
 
             if (pacUseSocks)
@@ -58,7 +62,7 @@ void PACPluginProcessor::ProcessEvent_Connectivity(const ::Qv2rayPlugin::QvConne
                 }
                 else
                 {
-                    // LOG(MODULE_UI, "PAC is using SOCKS, but it is not enabled")
+                    pluginInstance->PluginLog("PAC is using SOCKS, but it is not enabled");
                     pluginInstance->PluginErrorMessageBox(tr("Could not start PAC server, SOCKS inbound is not enabled"));
                     break;
                 }
@@ -71,7 +75,7 @@ void PACPluginProcessor::ProcessEvent_Connectivity(const ::Qv2rayPlugin::QvConne
                 }
                 else
                 {
-                    // LOG(MODULE_UI, "PAC is using HTTP, but it is not enabled")
+                    pluginInstance->PluginLog("PAC is using HTTP, but it is not enabled");
                     pluginInstance->PluginErrorMessageBox(tr("Could not start PAC server, HTTP inbound is not enabled"));
                     break;
                 }
@@ -79,12 +83,14 @@ void PACPluginProcessor::ProcessEvent_Connectivity(const ::Qv2rayPlugin::QvConne
 
             server.setPACProxyString(pacProxyString);
             isPACStarted = server.startServer();
+
             break;
         }
         case Qv2rayPlugin::QvConnecticity_Disconnected:
         {
             if (server.isServerStarted())
             {
+                pluginInstance->PluginLog("Stopping PAC Server");
                 server.stopServer();
             }
             break;
