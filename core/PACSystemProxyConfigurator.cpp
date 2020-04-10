@@ -4,8 +4,9 @@
 #include <QStandardPaths>
 #include <QStringList>
 #ifdef Q_OS_WIN
-    #include <WinInet.h>
     #include <Windows.h>
+    //
+    #include <WinInet.h>
 #endif
 
 #ifdef Q_OS_MACOS
