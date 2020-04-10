@@ -3,6 +3,7 @@
 #include <QProcess>
 #include <QStandardPaths>
 #include <QStringList>
+#include <QRegExp>
 #ifdef Q_OS_WIN
     #include <Windows.h>
     //
@@ -19,7 +20,7 @@ QStringList macOSgetNetworkServices()
     p.waitForStarted();
     p.waitForFinished();
     // LOG(MODULE_PROXY, p.errorString())
-    auto str = p.readAllStandardOutput();
+    QString str = p.readAllStandardOutput();
     auto lines = str.split(QRegExp("[\r\n]"));
     QStringList result;
 
