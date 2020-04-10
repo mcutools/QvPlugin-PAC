@@ -8,7 +8,7 @@
 
 Qv2rayPACPlugin *pluginInstance = nullptr;
 
-QvPluginKernel *Qv2rayPACPlugin::GetKernel()
+std::shared_ptr<QvPluginKernel> Qv2rayPACPlugin::GetKernel()
 {
     return nullptr;
 }
@@ -23,7 +23,7 @@ bool Qv2rayPACPlugin::Initialize(const QString &confPath, const QJsonObject &set
 {
     emit PluginLog("Initialize PAC plugin.");
     pluginInstance = this;
-    processor = new PACPluginProcessor(this);
+    processor = std::make_shared<PACPluginProcessor>(this);
     this->configPath = confPath;
     this->settings = settings;
     return true;
@@ -34,18 +34,18 @@ const QJsonObject Qv2rayPACPlugin::GetSettngs()
     return settings;
 }
 
-QWidget *Qv2rayPACPlugin::GetSettingsWidget()
+std::unique_ptr<QWidget> Qv2rayPACPlugin::GetSettingsWidget()
 {
-    return new QvPACPluginSettingsWidget();
+    return std::make_unique<QvPACPluginSettingsWidget>();
 }
 
-Qv2rayPlugin::QvPluginEditor *Qv2rayPACPlugin::GetEditorWidget(Qv2rayPlugin::UI_TYPE)
+std::unique_ptr<Qv2rayPlugin::QvPluginEditor> Qv2rayPACPlugin::GetEditorWidget(Qv2rayPlugin::UI_TYPE)
 {
     // PAC does not have an editor widget.
     return nullptr;
 }
 
-QvPluginEventHandler *Qv2rayPACPlugin::GetEventHandler()
+std::shared_ptr<QvPluginEventHandler> Qv2rayPACPlugin::GetEventHandler()
 {
     return processor;
 }

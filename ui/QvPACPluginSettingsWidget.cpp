@@ -11,25 +11,23 @@ QvPACPluginSettingsWidget::QvPACPluginSettingsWidget(QWidget *parent) : QWidget(
 {
     setupUi(this);
     this->settings = pluginInstance->GetSettngs();
-    bool pacEnabled = settings["enablePAC"].toBool(true);
-    pacGroupBox->setChecked(pacEnabled);
-    //
-    // PAC
+    pacGroupBox->setChecked(settings["enablePAC"].toBool(true));
     pacPortSB->setValue(settings["port"].toInt(0));
     pacProxyTxt->setText(settings["localIP"].toString());
     pacProxyCB->setCurrentIndex(settings["useSocksProxy"].toBool() ? 1 : 0);
     pacListenAddrLabel->setText("http://" + (pacProxyTxt->text().isEmpty() ? "127.0.0.1" : pacProxyTxt->text()) + ":" +
                                 QString::number(pacPortSB->value()) + "/pac");
+    pacSystemProxyCB->setChecked(settings["setSystemProxy"].toBool());
 }
 
 QvPACPluginSettingsWidget::~QvPACPluginSettingsWidget()
 {
+    pluginInstance->UpdateSettings(settings);
 }
 
 void QvPACPluginSettingsWidget::on_pacProxyTxt_textChanged(const QString &arg1)
 {
     Q_UNUSED(arg1)
-
     pacListenAddrLabel->setText("http://" + (pacProxyTxt->text().isEmpty() ? "127.0.0.1" : pacProxyTxt->text()) + ":" +
                                 QString::number(pacPortSB->value()) + "/pac");
 }
@@ -44,14 +42,6 @@ void QvPACPluginSettingsWidget::on_pacProxyCB_currentIndexChanged(int index)
 void QvPACPluginSettingsWidget::on_pacGroupBox_clicked(bool checked)
 {
     settings["enablePAC"] = checked;
-    if (checked)
-    {
-        QMessageBox::warning(
-            this, QObject::tr("Deprecated"),
-            QObject::tr("PAC is now deprecated and is not encouraged to be used anymore.") + "\r\n" +
-                QObject::tr("It will be removed or be provided as a plugin in the future.") + "\r\n\r\n" +
-                QObject::tr("PAC will still work currently, but please switch to the V2ray built-in routing as soon as possible."));
-    }
 }
 
 void QvPACPluginSettingsWidget::on_pacProxyTxt_textEdited(const QString &arg1)
@@ -134,20 +124,9 @@ void QvPACPluginSettingsWidget::on_pacPortSB_valueChanged(int arg1)
                                 QString::number(pacPortSB->value()) + "/pac");
 }
 
-void QvPACPluginSettingsWidget::on_buttonBox_accepted()
-{
-    pluginInstance->UpdateSettings(settings);
-    parentWidget()->close();
-}
-
 void QvPACPluginSettingsWidget::on_pacListenAddrTxt_textEdited(const QString &arg1)
 {
     settings["listenip"] = arg1;
-}
-
-void QvPACPluginSettingsWidget::on_buttonBox_rejected()
-{
-    parentWidget()->close();
 }
 
 void QvPACPluginSettingsWidget::on_openPACDirBtn_clicked()

@@ -1,6 +1,6 @@
 TEMPLATE = lib
 QT += network widgets gui
-CONFIG += qt plugin c++11
+CONFIG += qt plugin c++14
 
 include(interface/QvPluginInterface.pri)
 
@@ -11,8 +11,8 @@ HEADERS += \
     $${PWD}/core/HTTPRequestHelper.hpp \
     $${PWD}/core/QvPACHandler.hpp \
     $${PWD}/ui/QvPACPluginSettingsWidget.hpp \
-    core/PACPluginProcessor.hpp \
-    core/PACSystemProxyConfigurator.hpp
+    $${PWD}/core/PACPluginProcessor.hpp \
+    $${PWD}/core/PACSystemProxyConfigurator.hpp
 
 DEFINES += QHTTPSERVER_EXPORT
     
@@ -29,8 +29,8 @@ SOURCES += \
     $${PWD}/core/HTTPRequestHelper.cpp \
     $${PWD}/core/QvGFWPACConverter.cpp\
     $${PWD}/core/QvPACHandler.cpp \
-    core/PACPluginProcessor.cpp \
-    core/PACSystemProxyConfigurator.cpp
+    $${PWD}/core/PACPluginProcessor.cpp \
+    $${PWD}/core/PACSystemProxyConfigurator.cpp
 
 FORMS += ui/QvPACPluginSettingsWidget.ui
 

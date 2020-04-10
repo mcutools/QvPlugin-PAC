@@ -34,18 +34,22 @@ class Qv2rayPACPlugin
             tr("This plugin allows you to use PAC as a proxy method."), //
             QIcon(":/qv2ray.png"),                                      //
             { CAPABILITY_SYSTEM_PROXY, CAPABILITY_CONNECTIVITY },       //
-            { SPECIAL_TYPE_NONE }                                       //
+            {}                                                          //
         };
     }
     //
-    QWidget *GetSettingsWidget() override;
-    QvPluginKernel *GetKernel() override;
-    QvPluginEditor *GetEditorWidget(Qv2rayPlugin::UI_TYPE) override;
+    std::unique_ptr<QWidget> GetSettingsWidget() override;
+    std::unique_ptr<QvPluginEditor> GetEditorWidget(Qv2rayPlugin::UI_TYPE) override;
+    std::shared_ptr<QvPluginKernel> GetKernel() override;
+    std::shared_ptr<QvPluginEventHandler> GetEventHandler() override;
+    std::shared_ptr<QvPluginSerializer> GetSerializer() override
+    {
+        return nullptr;
+    };
     //
     bool UpdateSettings(const QJsonObject &) override;
     bool Initialize(const QString &, const QJsonObject &) override;
     const QJsonObject GetSettngs() override;
-    QvPluginEventHandler *GetEventHandler() override;
 
   signals:
     void PluginLog(const QString &) const override;
@@ -58,7 +62,7 @@ class Qv2rayPACPlugin
     }
 
   private:
-    PACPluginProcessor *processor;
+    std::shared_ptr<PACPluginProcessor> processor;
     QString configPath;
     QJsonObject settings;
 };
