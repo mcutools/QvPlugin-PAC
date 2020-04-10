@@ -45,3 +45,8 @@ RESOURCES += resx.qrc
 win32 {
     LIBS += -lwininet
 }
+
+macx {
+    QMAKE_RPATHDIR += @executable_path/../Frameworks
+}
+
