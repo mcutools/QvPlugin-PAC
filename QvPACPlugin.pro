@@ -42,6 +42,8 @@ FORMS += ui/QvPACPluginSettingsWidget.ui
 
 RESOURCES += resx.qrc
 
+QMAKE_CXXFLAGS += -fPIC
+
 win32 {
     LIBS += -lwininet
 }
