@@ -1,14 +1,14 @@
 #pragma once
 
-#include "Qv2rayPluginProcessor.hpp"
 #include "QvPACHandler.hpp"
+#include "QvPluginProcessor.hpp"
 
 class PACPluginProcessor : public Qv2rayPlugin::QvPluginEventHandler
 {
   public:
     explicit PACPluginProcessor(QObject *parent = nullptr);
-    QVPlUGIN_DECL_EVENT_HANDLER_OVERRIDE(SystemProxy);
-    QVPlUGIN_DECL_EVENT_HANDLER_OVERRIDE(Connectivity);
+    QvPlugin_EventHandler_Decl(SystemProxy);
+    QvPlugin_EventHandler_Decl(Connectivity);
 
   private:
     PACServer server;

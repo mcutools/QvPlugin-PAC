@@ -6,11 +6,11 @@
 PACPluginProcessor::PACPluginProcessor(QObject *parent) : Qv2rayPlugin::QvPluginEventHandler(parent), server(this)
 {
 }
-void PACPluginProcessor::ProcessEvent_SystemProxy(const ::Qv2rayPlugin::QvSystemProxyEventObject &event)
+QvPlugin_EventHandler(PACPluginProcessor, SystemProxy)
 {
-    switch (event.systemProxyState)
+    switch (pluginEvent.systemProxyState)
     {
-        case Qv2rayPlugin::SystemProxyState_SetProxy:
+        case Qv2rayPlugin::Events::SystemProxy::SystemProxyState_SetProxy:
         {
             const auto &settings = pluginInstance->GetSettngs();
             if (isPACStarted)
@@ -37,18 +37,18 @@ void PACPluginProcessor::ProcessEvent_SystemProxy(const ::Qv2rayPlugin::QvSystem
             }
             break;
         }
-        case Qv2rayPlugin::SystemProxyState_ClearProxy:
+        case Qv2rayPlugin::Events::SystemProxy::SystemProxyState_ClearProxy:
         {
             break;
         }
     }
 }
 
-void PACPluginProcessor::ProcessEvent_Connectivity(const ::Qv2rayPlugin::QvConnectivityEventObject &event)
+QvPlugin_EventHandler(PACPluginProcessor, Connectivity)
 {
-    switch (event.eventType)
+    switch (pluginEvent.eventType)
     {
-        case Qv2rayPlugin::QvConnecticity_Connected:
+        case Qv2rayPlugin::Events::Connectivity::QvConnecticity_Connected:
         {
             const auto &settings = pluginInstance->GetSettngs();
             if (!settings["setSystemProxy"].toBool(false))
@@ -56,8 +56,8 @@ void PACPluginProcessor::ProcessEvent_Connectivity(const ::Qv2rayPlugin::QvConne
                 break;
             }
             bool pacUseSocks = settings["useSocksProxy"].toBool();
-            bool httpEnabled = event.inboundPorts.contains("http");
-            bool socksEnabled = event.inboundPorts.contains("socks");
+            bool httpEnabled = pluginEvent.inboundPorts.contains("http");
+            bool socksEnabled = pluginEvent.inboundPorts.contains("socks");
             QString pacProxyString; // Something like: SOCKS5 127.0.0.1:1080; SOCKS 127.0.0.1:1080; DIRECT; http://proxy:8080
             auto pacProxyServerIP = settings["localIP"].toString("127.0.0.1");
 
@@ -65,7 +65,7 @@ void PACPluginProcessor::ProcessEvent_Connectivity(const ::Qv2rayPlugin::QvConne
             {
                 if (socksEnabled)
                 {
-                    pacProxyString = "SOCKS5 " + pacProxyServerIP + ":" + QString::number(event.inboundPorts["socks"]);
+                    pacProxyString = "SOCKS5 " + pacProxyServerIP + ":" + QString::number(pluginEvent.inboundPorts["socks"]);
                 }
                 else
                 {
@@ -78,7 +78,7 @@ void PACPluginProcessor::ProcessEvent_Connectivity(const ::Qv2rayPlugin::QvConne
             {
                 if (httpEnabled)
                 {
-                    pacProxyString = "PROXY " + pacProxyServerIP + ":" + QString::number(event.inboundPorts["http"]);
+                    pacProxyString = "PROXY " + pacProxyServerIP + ":" + QString::number(pluginEvent.inboundPorts["http"]);
                 }
                 else
                 {
@@ -93,7 +93,7 @@ void PACPluginProcessor::ProcessEvent_Connectivity(const ::Qv2rayPlugin::QvConne
 
             break;
         }
-        case Qv2rayPlugin::QvConnecticity_Disconnected:
+        case Qv2rayPlugin::Events::Connectivity::QvConnecticity_Disconnected:
         {
             if (server.isServerStarted())
             {
