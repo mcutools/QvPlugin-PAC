@@ -1,5 +1,6 @@
 #pragma once
 
+#include "PACConfig.hpp"
 #include "ui_QvPACPluginSettingsWidget.h"
 
 #include <QJsonObject>
@@ -27,5 +28,5 @@ class QvPACPluginSettingsWidget
     void on_pacSystemProxyCB_stateChanged(int arg1);
 
   private:
-    QJsonObject settings;
+    PACSettings settings;
 };

@@ -7,3 +7,6 @@
 [submodule "3rdparty/qhttp"]
 	path = 3rdparty/qhttp
 	url = https://github.com/azadkuh/qhttp
+[submodule "lib/QJsonStruct"]
+	path = lib/QJsonStruct
+	url = https://github.com/Qv2ray/QJsonStruct

@@ -10,19 +10,20 @@
 QvPACPluginSettingsWidget::QvPACPluginSettingsWidget(QWidget *parent) : QWidget(parent)
 {
     setupUi(this);
-    this->settings = pluginInstance->GetSettngs();
-    pacGroupBox->setChecked(settings["enablePAC"].toBool(true));
-    pacPortSB->setValue(settings["port"].toInt(0));
-    pacProxyTxt->setText(settings["localIP"].toString());
-    pacProxyCB->setCurrentIndex(settings["useSocksProxy"].toBool() ? 1 : 0);
+    this->settings = pluginInstance->Settings();
+    pacGroupBox->setChecked(settings.enablePAC);
+    pacPortSB->setValue(settings.listenPort);
+    pacListenAddrTxt->setText(settings.listenIP);
+    pacProxyTxt->setText(settings.proxyServerIP);
+    pacProxyCB->setCurrentIndex(settings.useSocksProxy ? 1 : 0);
     pacListenAddrLabel->setText("http://" + (pacProxyTxt->text().isEmpty() ? "127.0.0.1" : pacProxyTxt->text()) + ":" +
                                 QString::number(pacPortSB->value()) + "/pac");
-    pacSystemProxyCB->setChecked(settings["setSystemProxy"].toBool());
+    pacSystemProxyCB->setChecked(settings.setSystemProxy);
 }
 
 QvPACPluginSettingsWidget::~QvPACPluginSettingsWidget()
 {
-    pluginInstance->UpdateSettings(settings);
+    pluginInstance->UpdateSettings(settings.toJson());
 }
 
 void QvPACPluginSettingsWidget::on_pacProxyTxt_textChanged(const QString &arg1)
@@ -36,17 +37,17 @@ void QvPACPluginSettingsWidget::on_pacProxyCB_currentIndexChanged(int index)
 {
     // 0 -> http
     // 1 -> socks
-    settings["useSocksProxy"] = index == 1;
+    settings.useSocksProxy = index == 1;
 }
 
 void QvPACPluginSettingsWidget::on_pacGroupBox_clicked(bool checked)
 {
-    settings["enablePAC"] = checked;
+    settings.enablePAC = checked;
 }
 
 void QvPACPluginSettingsWidget::on_pacProxyTxt_textEdited(const QString &arg1)
 {
-    settings["localIP"] = arg1;
+    settings.proxyServerIP = arg1;
 }
 
 void QvPACPluginSettingsWidget::on_pacGoBtn_clicked()
@@ -119,14 +120,14 @@ void QvPACPluginSettingsWidget::on_pacGoBtn_clicked()
 
 void QvPACPluginSettingsWidget::on_pacPortSB_valueChanged(int arg1)
 {
-    settings["port"] = arg1;
+    settings.listenPort = arg1;
     pacListenAddrLabel->setText("http://" + (pacProxyTxt->text().isEmpty() ? "127.0.0.1" : pacProxyTxt->text()) + ":" +
                                 QString::number(pacPortSB->value()) + "/pac");
 }
 
 void QvPACPluginSettingsWidget::on_pacListenAddrTxt_textEdited(const QString &arg1)
 {
-    settings["listenip"] = arg1;
+    settings.listenIP = arg1;
 }
 
 void QvPACPluginSettingsWidget::on_openPACDirBtn_clicked()
@@ -136,5 +137,5 @@ void QvPACPluginSettingsWidget::on_openPACDirBtn_clicked()
 
 void QvPACPluginSettingsWidget::on_pacSystemProxyCB_stateChanged(int arg1)
 {
-    settings["setSystemProxy"] = arg1 == Qt::Checked;
+    settings.setSystemProxy = arg1 == Qt::Checked;
 }

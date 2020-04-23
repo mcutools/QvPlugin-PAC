@@ -30,7 +30,7 @@ bool PACServer::startServer()
     connect(server, &QHttpServer::newRequest, this, &PACServer::PACRequestHandler);
     pluginInstance->PluginLog("Starting PAC Server.");
     //
-    const auto &settings = pluginInstance->GetSettngs();
+    const auto &settings = pluginInstance->Settings();
     //
     auto GFWListsPath = pluginInstance->GetConfigPath() + "/gfwList.txt";
     QFile gfwFile(GFWListsPath);
@@ -58,7 +58,7 @@ bool PACServer::startServer()
     }
     //
     //
-    isStarted = server->listen(QHostAddress(settings["listenip"].toString()), settings["port"].toInt());
+    isStarted = server->listen(QHostAddress(settings.listenIP), settings.listenPort);
     if (!isStarted)
     {
         pluginInstance->PluginErrorMessageBox(tr("Failed to listen PAC request on this port, please verify the permissions"));

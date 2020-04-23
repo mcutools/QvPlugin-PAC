@@ -12,14 +12,14 @@ QvPlugin_EventHandler(PACPluginProcessor, SystemProxy)
     {
         case Qv2rayPlugin::Events::SystemProxy::SystemProxyState_SetProxy:
         {
-            const auto &settings = pluginInstance->GetSettngs();
+            const auto &settings = pluginInstance->Settings();
             if (isPACStarted)
             {
-                if (settings["setSystemProxy"].toBool(false))
+                if (settings.setSystemProxy)
                 {
                     // If we use PAC and socks/http are properly configured for PAC
                     pluginInstance->PluginLog("Setting up system proxy for PAC.");
-                    auto proxyAddress = "http://127.0.0.1:" + QString::number(settings["port"].toInt(8990)) + "/pac";
+                    auto proxyAddress = "http://127.0.0.1:" + QString::number(settings.listenPort) + "/pac";
                     // Set System Proxy
                     SetSystemProxy(proxyAddress);
                 }
@@ -50,16 +50,16 @@ QvPlugin_EventHandler(PACPluginProcessor, Connectivity)
     {
         case Qv2rayPlugin::Events::Connectivity::QvConnecticity_Connected:
         {
-            const auto &settings = pluginInstance->GetSettngs();
-            if (!settings["setSystemProxy"].toBool(false))
+            const auto &settings = pluginInstance->Settings();
+            if (!settings.enablePAC)
             {
                 break;
             }
-            bool pacUseSocks = settings["useSocksProxy"].toBool();
+            bool pacUseSocks = settings.useSocksProxy;
             bool httpEnabled = pluginEvent.inboundPorts.contains("http");
             bool socksEnabled = pluginEvent.inboundPorts.contains("socks");
             QString pacProxyString; // Something like: SOCKS5 127.0.0.1:1080; SOCKS 127.0.0.1:1080; DIRECT; http://proxy:8080
-            auto pacProxyServerIP = settings["localIP"].toString("127.0.0.1");
+            auto pacProxyServerIP = settings.proxyServerIP;
 
             if (pacUseSocks)
             {

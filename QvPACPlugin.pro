@@ -15,14 +15,18 @@ HEADERS += \
     $${PWD}/core/QvPACHandler.hpp \
     $${PWD}/ui/QvPACPluginSettingsWidget.hpp \
     $${PWD}/core/PACPluginProcessor.hpp \
-    $${PWD}/core/PACSystemProxyConfigurator.hpp
+    $${PWD}/core/PACSystemProxyConfigurator.hpp \
+    $${PWD}/core/PACConfig.hpp \
+    $${PWD}/lib/QJsonStruct/QJsonStruct.hpp
+
 
 DEFINES += QHTTPSERVER_EXPORT UNICODE _UNICODE
     
 INCLUDEPATH += \
     $${PWD}/3rdparty/qhttpserver/ \
     $${PWD}/3rdparty/qhttpserver/http-parser \
-    $${PWD}/core/
+    $${PWD}/core/ \
+    $${PWD}/lib/QJsonStruct
 
 SOURCES += \
     $${PWD}/3rdparty/qhttpserver/http-parser/http_parser.c\

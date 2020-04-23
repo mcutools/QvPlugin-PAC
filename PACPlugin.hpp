@@ -1,5 +1,5 @@
 #pragma once
-
+#include "PACConfig.hpp"
 #include "PACPluginProcessor.hpp"
 #include "QvPluginInterface.hpp"
 
@@ -50,6 +50,7 @@ class Qv2rayPACPlugin
     bool UpdateSettings(const QJsonObject &) override;
     bool Initialize(const QString &, const QJsonObject &) override;
     const QJsonObject GetSettngs() override;
+    PACSettings &Settings();
 
   signals:
     void PluginLog(const QString &) const override;
@@ -64,7 +65,7 @@ class Qv2rayPACPlugin
   private:
     std::shared_ptr<PACPluginProcessor> processor;
     QString configPath;
-    QJsonObject settings;
+    PACSettings settings;
 };
 
 extern Qv2rayPACPlugin *pluginInstance;

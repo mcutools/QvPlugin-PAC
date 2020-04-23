@@ -15,7 +15,7 @@ std::shared_ptr<QvPluginKernel> Qv2rayPACPlugin::GetKernel()
 
 bool Qv2rayPACPlugin::UpdateSettings(const QJsonObject &conf)
 {
-    settings = conf;
+    settings.loadJson(conf);
     return true;
 }
 
@@ -25,13 +25,13 @@ bool Qv2rayPACPlugin::Initialize(const QString &confPath, const QJsonObject &set
     pluginInstance = this;
     processor = std::make_shared<PACPluginProcessor>(this);
     this->configPath = confPath;
-    this->settings = settings;
+    this->settings.loadJson(settings);
     return true;
 }
 
 const QJsonObject Qv2rayPACPlugin::GetSettngs()
 {
-    return settings;
+    return settings.toJson();
 }
 
 std::unique_ptr<QWidget> Qv2rayPACPlugin::GetSettingsWidget()
