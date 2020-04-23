@@ -19,6 +19,11 @@ bool Qv2rayPACPlugin::UpdateSettings(const QJsonObject &conf)
     return true;
 }
 
+const PACSettings Qv2rayPACPlugin::Settings() const
+{
+    return settings;
+}
+
 bool Qv2rayPACPlugin::Initialize(const QString &confPath, const QJsonObject &settings)
 {
     emit PluginLog("Initialize PAC plugin.");

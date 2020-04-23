@@ -50,7 +50,7 @@ class Qv2rayPACPlugin
     bool UpdateSettings(const QJsonObject &) override;
     bool Initialize(const QString &, const QJsonObject &) override;
     const QJsonObject GetSettngs() override;
-    PACSettings &Settings();
+    const PACSettings Settings() const;
 
   signals:
     void PluginLog(const QString &) const override;
@@ -99,11 +99,4 @@ inline QString StringFromFile(QString &sourcePath)
     QTextCodec *codec = QTextCodec::codecForName("UTF-8");
     const QString text = codec->toUnicode(byteArray.constData(), byteArray.size(), &state);
     return (state.invalidChars > 0) ? byteArray : text;
-}
-
-// Helper template function to convert an enum to QString.
-template<typename T>
-QString EnumToString(const T &t)
-{
-    return QMetaEnum::fromType<T>().key(t);
 }
