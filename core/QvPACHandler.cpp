@@ -53,7 +53,7 @@ bool PACServer::startServer()
     else
     {
         pluginInstance->PluginLog("Cannot find qv2ray.pac or gfwList.txt");
-        pluginInstance->PluginErrorMessageBox(tr("Cannot find GFWLists file or user PAC file."));
+        pluginInstance->PluginErrorMessageBox(tr("Cannot find GFWLists file or user's PAC file."));
         return false;
     }
     //
